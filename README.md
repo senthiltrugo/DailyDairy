@@ -71,6 +71,9 @@ src/
 - `GET /collection-centers`
 - `POST /collect-milk`
 - `GET /daily-collection-summary?date=YYYY-MM-DD`
+- `POST /manufacturers`
+- `POST /dispatch-milk`
+- `GET /processing-report?date=YYYY-MM-DD&manufacturer_id=`
 
 Swagger docs are available at:
 
@@ -143,4 +146,54 @@ SELECT
 FROM collection_records
 WHERE timestamp >= :start AND timestamp < :end
 GROUP BY center_id, DATE(timestamp);
+```
+
+## Module 3: Processing Partner Integration
+
+Implemented features:
+
+1. **Manufacturer**
+   - `id`
+   - `name`
+   - `location`
+   - `capacity_per_day`
+   - `supported_products` (JSON/array)
+
+2. **Milk Dispatch**
+   - `id`
+   - `center_id`
+   - `manufacturer_id`
+   - `quantity`
+   - `date`
+   - tracked outputs:
+     - `paneer_output_kg`
+     - `ghee_output_kg`
+
+3. **Conversion Logic**
+   - `10L milk -> 1kg paneer`
+   - `25L milk -> 1kg ghee`
+
+4. **Track Input/Output**
+   - Input milk tracked per dispatch and aggregated per manufacturer/day
+   - Output products tracked and reported per manufacturer/day
+
+5. **APIs**
+   - `POST /manufacturers`
+   - `POST /dispatch-milk`
+   - `GET /processing-report`
+
+### Processing aggregation query
+
+Processing report uses Prisma aggregation equivalent to:
+
+```sql
+SELECT
+  manufacturer_id,
+  DATE(date) AS day,
+  SUM(quantity) AS input_litres,
+  SUM(paneer_output_kg) AS paneer_kg,
+  SUM(ghee_output_kg) AS ghee_kg
+FROM milk_dispatches
+WHERE date >= :start AND date < :end
+GROUP BY manufacturer_id, DATE(date);
 ```

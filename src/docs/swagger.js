@@ -291,6 +291,168 @@ const swaggerDefinition = {
           },
         },
       },
+      Manufacturer: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          name: { type: "string", example: "ABC Dairy Products" },
+          location: { type: "string", example: "Madurai Industrial Estate" },
+          capacity_per_day: { type: "number", example: 8000 },
+          supported_products: {
+            type: "array",
+            items: { type: "string" },
+            example: ["paneer", "ghee"],
+          },
+          created_at: { type: "string", format: "date-time" },
+        },
+      },
+      CreateManufacturerRequest: {
+        type: "object",
+        required: ["name", "location", "capacity_per_day", "supported_products"],
+        properties: {
+          name: { type: "string" },
+          location: { type: "string" },
+          capacity_per_day: { type: "number", minimum: 0.01 },
+          supported_products: {
+            oneOf: [
+              {
+                type: "array",
+                items: { type: "string" },
+              },
+              {
+                type: "object",
+                additionalProperties: true,
+              },
+            ],
+          },
+        },
+      },
+      ManufacturerCreateResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          message: { type: "string", example: "Manufacturer created successfully" },
+          data: { $ref: "#/components/schemas/Manufacturer" },
+        },
+      },
+      MilkDispatch: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          center_id: { type: "string", format: "uuid" },
+          manufacturer_id: { type: "string", format: "uuid" },
+          quantity: { type: "number", example: 500 },
+          date: { type: "string", format: "date-time" },
+          paneer_output_kg: { type: "number", example: 50 },
+          ghee_output_kg: { type: "number", example: 20 },
+        },
+      },
+      CreateMilkDispatchRequest: {
+        type: "object",
+        required: ["center_id", "manufacturer_id", "quantity", "date"],
+        properties: {
+          center_id: { type: "string", format: "uuid" },
+          manufacturer_id: { type: "string", format: "uuid" },
+          quantity: { type: "number", minimum: 0.01 },
+          date: { type: "string", format: "date" },
+        },
+      },
+      MilkDispatchCreateResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          message: { type: "string", example: "Milk dispatched successfully" },
+          data: {
+            allOf: [
+              { $ref: "#/components/schemas/MilkDispatch" },
+              {
+                type: "object",
+                properties: {
+                  conversion_output: {
+                    type: "object",
+                    properties: {
+                      input_milk_litres: { type: "number", example: 500 },
+                      paneer_output_kg: { type: "number", example: 50 },
+                      ghee_output_kg: { type: "number", example: 20 },
+                      conversion_rules: {
+                        type: "object",
+                        properties: {
+                          paneer: { type: "string", example: "10L milk -> 1kg paneer" },
+                          ghee: { type: "string", example: "25L milk -> 1kg ghee" },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+          manufacturer_capacity_status: {
+            type: "object",
+            properties: {
+              manufacturer_id: { type: "string", format: "uuid" },
+              date: { type: "string", format: "date" },
+              daily_input_milk_litres: { type: "number" },
+              capacity_per_day: { type: "number" },
+              alert: { type: "string", enum: ["OK", "CAPACITY_EXCEEDED"] },
+            },
+          },
+        },
+      },
+      ProcessingReportItem: {
+        type: "object",
+        properties: {
+          manufacturer_id: { type: "string", format: "uuid" },
+          manufacturer_name: { type: "string" },
+          location: { type: "string" },
+          date: { type: "string", format: "date" },
+          input_milk_litres: { type: "number" },
+          output_products: {
+            type: "object",
+            properties: {
+              paneer_kg: { type: "number" },
+              ghee_kg: { type: "number" },
+            },
+          },
+          dispatches: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                dispatch_id: { type: "string", format: "uuid" },
+                center_id: { type: "string", format: "uuid" },
+                center_name: { type: "string" },
+                quantity: { type: "number" },
+              },
+            },
+          },
+        },
+      },
+      ProcessingReportResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          data: {
+            type: "array",
+            items: { $ref: "#/components/schemas/ProcessingReportItem" },
+          },
+          conversion_rules: {
+            type: "object",
+            properties: {
+              paneer: { type: "string", example: "10L milk -> 1kg paneer" },
+              ghee: { type: "string", example: "25L milk -> 1kg ghee" },
+            },
+          },
+          aggregation_query: {
+            type: "object",
+            properties: {
+              type: { type: "string", example: "prisma" },
+              description: { type: "string" },
+              pseudo_sql: { type: "string" },
+            },
+          },
+        },
+      },
     },
   },
   servers: [

@@ -54,6 +54,7 @@ model CollectionCenter {
   createdAt     DateTime                 @default(now()) @map("created_at")
   records       CollectionRecord[]
   farmerLinks   FarmerCollectionCenter[]
+  dispatches    MilkDispatch[]
 
   @@map("collection_centers")
 }
@@ -86,4 +87,34 @@ model FarmerCollectionCenter {
   @@unique([farmerId], map: "uniq_farmer_center_assignment")
   @@index([centerId], map: "idx_farmer_center_assignment_center_id")
   @@map("farmer_collection_centers")
+}
+
+model Manufacturer {
+  id                String         @id @default(uuid()) @db.Uuid
+  name              String
+  location          String
+  capacityPerDay    Decimal        @db.Decimal(12, 2) @map("capacity_per_day")
+  supportedProducts Json           @map("supported_products")
+  createdAt         DateTime       @default(now()) @map("created_at")
+  dispatches        MilkDispatch[]
+
+  @@map("manufacturers")
+}
+
+model MilkDispatch {
+  id                 String           @id @default(uuid()) @db.Uuid
+  centerId           String           @db.Uuid @map("center_id")
+  manufacturerId     String           @db.Uuid @map("manufacturer_id")
+  quantity           Decimal          @db.Decimal(12, 2)
+  date               DateTime         @db.Date
+  paneerOutputKg     Decimal          @db.Decimal(12, 3) @map("paneer_output_kg")
+  gheeOutputKg       Decimal          @db.Decimal(12, 3) @map("ghee_output_kg")
+  createdAt          DateTime         @default(now()) @map("created_at")
+  center             CollectionCenter @relation(fields: [centerId], references: [id], onDelete: Cascade)
+  manufacturer       Manufacturer     @relation(fields: [manufacturerId], references: [id], onDelete: Cascade)
+
+  @@index([centerId], map: "idx_milk_dispatch_center_id")
+  @@index([manufacturerId], map: "idx_milk_dispatch_manufacturer_id")
+  @@index([date], map: "idx_milk_dispatch_date")
+  @@map("milk_dispatches")
 }
