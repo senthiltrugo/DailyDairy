@@ -208,9 +208,87 @@ const getInvestorPortfolio = async (req, res, next) => {
   }
 };
 
+const getInvestorDashboard = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const investor = await prisma.investor.findUnique({
+      where: { id },
+      include: {
+        investments: {
+          orderBy: [{ date: "desc" }, { createdAt: "desc" }],
+        },
+      },
+    });
+
+    if (!investor) {
+      return res.status(404).json({
+        success: false,
+        message: "Investor not found",
+      });
+    }
+
+    const portfolio = calculatePortfolio(investor.investments);
+    const latestInvestments = investor.investments.slice(0, 8);
+
+    const totalCowsFunded = Number((portfolio.category_amounts.milk / 50000).toFixed(0));
+    const activeFarmsHubs = Number(
+      ((portfolio.category_amounts.hubs + portfolio.category_amounts["value-added"]) / 100000).toFixed(0),
+    );
+    const dailyMilkProduction = Number((portfolio.category_amounts.milk / 1200).toFixed(1));
+
+    return res.json({
+      success: true,
+      data: {
+        investor: mapInvestor(investor),
+        summary_cards: {
+          total_cows_funded: totalCowsFunded,
+          active_farms_hubs: activeFarmsHubs,
+          daily_milk_production_litres: dailyMilkProduction,
+          total_investment: portfolio.total_invested_amount,
+          current_returns: portfolio.total_expected_returns,
+          roi_percentage: portfolio.total_roi_percentage,
+        },
+        portfolio_breakdown: {
+          allocation_percentages: portfolio.allocation_percentages,
+          category_amounts: portfolio.category_amounts,
+          expected_returns_by_category: portfolio.expected_returns_by_category,
+          roi_rates: portfolio.roi_rates,
+          pie_chart_data: [
+            {
+              name: "Milk (low risk)",
+              value: portfolio.allocation_percentages.milk,
+              amount: portfolio.category_amounts.milk,
+            },
+            {
+              name: "Dairy hubs",
+              value: portfolio.allocation_percentages.hubs,
+              amount: portfolio.category_amounts.hubs,
+            },
+            {
+              name: "Value-added products",
+              value: portfolio.allocation_percentages["value-added"],
+              amount: portfolio.category_amounts["value-added"],
+            },
+          ],
+        },
+        recent_transactions: latestInvestments.map((entry) => ({
+          id: entry.id,
+          category: entry.category,
+          amount: Number(entry.amount),
+          date: entry.date,
+        })),
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createInvestor,
   createInvestment,
   getInvestorById,
   getInvestorPortfolio,
+  getInvestorDashboard,
 };

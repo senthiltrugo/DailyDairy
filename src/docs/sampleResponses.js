@@ -635,6 +635,82 @@ const sampleResponses = {
       },
     },
   },
+  investorDashboard: {
+    response: {
+      success: true,
+      data: {
+        investor: {
+          id: "ee860395-15b8-40c9-886e-f3cb48d2f705",
+          name: "Arun Prakash",
+          phone: "9876540001",
+          email: "arun.prakash@example.com",
+          KYC_status: "VERIFIED",
+          created_at: "2026-04-18T14:00:00.000Z",
+        },
+        summary_cards: {
+          total_cows_funded: 2,
+          active_farms_hubs: 3,
+          daily_milk_production_litres: 83.3,
+          total_investment: 400000,
+          current_returns: 93000,
+          roi_percentage: 23.25,
+        },
+        portfolio_breakdown: {
+          allocation_percentages: {
+            milk: 25,
+            hubs: 37.5,
+            "value-added": 37.5,
+          },
+          category_amounts: {
+            milk: 100000,
+            hubs: 150000,
+            "value-added": 150000,
+          },
+          expected_returns_by_category: {
+            milk: 15000,
+            hubs: 33000,
+            "value-added": 45000,
+          },
+          roi_rates: {
+            milk: "15%",
+            hubs: "22%",
+            "value-added": "30%",
+          },
+          pie_chart_data: [
+            {
+              name: "Milk (low risk)",
+              value: 25,
+              amount: 100000,
+            },
+            {
+              name: "Dairy hubs",
+              value: 37.5,
+              amount: 150000,
+            },
+            {
+              name: "Value-added products",
+              value: 37.5,
+              amount: 150000,
+            },
+          ],
+        },
+        recent_transactions: [
+          {
+            id: "da5dd0de-c6bc-40c6-869b-b9cb26881356",
+            category: "value-added",
+            amount: 250000,
+            date: "2026-04-18T00:00:00.000Z",
+          },
+          {
+            id: "8cde1658-f584-4369-9f7a-8531a5f47fc1",
+            category: "milk",
+            amount: 150000,
+            date: "2026-04-16T00:00:00.000Z",
+          },
+        ],
+      },
+    },
+  },
   farmerPayouts: {
     response: {
       success: true,

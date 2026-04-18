@@ -923,6 +923,78 @@ const swaggerDefinition = {
           },
         },
       },
+      InvestorDashboardSummaryCards: {
+        type: "object",
+        properties: {
+          total_cows_funded: { type: "number", example: 8 },
+          active_farms_hubs: { type: "number", example: 3 },
+          daily_milk_production_litres: { type: "number", example: 83.3 },
+          total_investment: { type: "number", example: 400000 },
+          current_returns: { type: "number", example: 93000 },
+          roi_percentage: { type: "number", example: 23.25 },
+        },
+      },
+      InvestorDashboardPortfolioBreakdown: {
+        type: "object",
+        properties: {
+          allocation_percentages: {
+            $ref: "#/components/schemas/PortfolioAllocationPercentages",
+          },
+          category_amounts: {
+            $ref: "#/components/schemas/PortfolioCategoryAmounts",
+          },
+          expected_returns_by_category: {
+            $ref: "#/components/schemas/PortfolioCategoryReturns",
+          },
+          roi_rates: {
+            $ref: "#/components/schemas/PortfolioRoiRates",
+          },
+          pie_chart_data: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                name: { type: "string" },
+                value: { type: "number" },
+                amount: { type: "number" },
+              },
+            },
+          },
+        },
+      },
+      InvestorDashboardResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          data: {
+            type: "object",
+            properties: {
+              investor: { $ref: "#/components/schemas/Investor" },
+              summary_cards: {
+                $ref: "#/components/schemas/InvestorDashboardSummaryCards",
+              },
+              portfolio_breakdown: {
+                $ref: "#/components/schemas/InvestorDashboardPortfolioBreakdown",
+              },
+              recent_transactions: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string", format: "uuid" },
+                    category: {
+                      type: "string",
+                      enum: ["milk", "hub", "value-added"],
+                    },
+                    amount: { type: "number" },
+                    date: { type: "string", format: "date-time" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
       FarmerPayoutItem: {
         type: "object",
         properties: {

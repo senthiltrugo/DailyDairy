@@ -60,6 +60,39 @@ src/
    npm run dev
    ```
 
+### Frontend Investor Dashboard (Next.js)
+
+An Investor Dashboard frontend is available in `frontend/`.
+
+1. Install frontend dependencies:
+
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. Configure frontend environment:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Set:
+
+   ```env
+   NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+   ```
+
+3. Run frontend:
+
+   ```bash
+   npm run dev
+   ```
+
+4. Open dashboard:
+
+   - `http://localhost:3000`
+
 ### API Endpoints
 
 - `POST /farmers`
@@ -86,6 +119,7 @@ src/
 - `GET /portfolio/:investor_id`
 - `GET /farmer-payouts?date=YYYY-MM-DD`
 - `GET /investor-payouts?date=YYYY-MM-DD`
+- `GET /investor-dashboard/:id`
 
 Swagger docs are available at:
 
@@ -335,6 +369,29 @@ Implemented features:
    - expected returns per category
    - total expected returns
    - total ROI%
+
+## Mobile-first Investor Dashboard (Next.js + Tailwind + Recharts)
+
+Implemented in `frontend/` with:
+
+- **Top cards**
+  - 💰 Total Investment
+  - 📈 Current Returns
+- **Middle cards**
+  - 🐄 Total Cows Funded
+  - 🏡 Active Farms/Hubs
+  - 🥛 Daily Milk Production
+- **Bottom section**
+  - Portfolio breakdown with progress bars + pie chart
+  - Recent transactions list
+
+Design highlights:
+
+- mobile-first responsive layout
+- Tailwind grid + card-based UI
+- fintech-style visual design (clean surfaces, subtle shadows, accent colors)
+- API integration with:
+  - `GET /investor-dashboard/:id`
 
 ## Module 8: Payments & Payout
 

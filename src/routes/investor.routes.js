@@ -4,6 +4,7 @@ const {
   createInvestment,
   getInvestorById,
   getInvestorPortfolio,
+  getInvestorDashboard,
 } = require("../controllers/investor.controller");
 
 const router = express.Router();
@@ -182,5 +183,34 @@ router.get("/investor/:id", getInvestorById);
  *               $ref: '#/components/schemas/SimpleErrorResponse'
  */
 router.get("/portfolio/:investor_id", getInvestorPortfolio);
+
+/**
+ * @swagger
+ * /investor-dashboard/{id}:
+ *   get:
+ *     summary: Get mobile dashboard data for investor
+ *     tags: [Investors]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Investor dashboard data fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/InvestorDashboardResponse'
+ *       404:
+ *         description: Investor not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SimpleErrorResponse'
+ */
+router.get("/investor-dashboard/:id", getInvestorDashboard);
 
 module.exports = router;
