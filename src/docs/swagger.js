@@ -762,6 +762,96 @@ const swaggerDefinition = {
           },
         },
       },
+      Investor: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          name: { type: "string" },
+          phone: { type: "string" },
+          email: { type: "string", format: "email" },
+          KYC_status: { type: "string", enum: ["PENDING", "VERIFIED", "REJECTED"] },
+          created_at: { type: "string", format: "date-time" },
+        },
+      },
+      CreateInvestorRequest: {
+        type: "object",
+        required: ["name", "phone", "email", "KYC_status"],
+        properties: {
+          name: { type: "string" },
+          phone: { type: "string" },
+          email: { type: "string", format: "email" },
+          KYC_status: { type: "string", enum: ["PENDING", "VERIFIED", "REJECTED"] },
+        },
+      },
+      InvestorCreateResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          message: { type: "string", example: "Investor created successfully" },
+          data: { $ref: "#/components/schemas/Investor" },
+        },
+      },
+      Investment: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          investor_id: { type: "string", format: "uuid" },
+          amount: { type: "number" },
+          category: { type: "string", enum: ["milk", "hub", "value-added"] },
+          date: { type: "string", format: "date-time" },
+          created_at: { type: "string", format: "date-time" },
+        },
+      },
+      CreateInvestmentRequest: {
+        type: "object",
+        required: ["investor_id", "amount", "category", "date"],
+        properties: {
+          investor_id: { type: "string", format: "uuid" },
+          amount: { type: "number", minimum: 0.01 },
+          category: { type: "string", enum: ["milk", "hub", "value-added"] },
+          date: { type: "string", format: "date" },
+        },
+      },
+      InvestmentCreateResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          message: { type: "string", example: "Investment recorded successfully" },
+          data: { $ref: "#/components/schemas/Investment" },
+        },
+      },
+      InvestorProfileResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          data: {
+            allOf: [
+              { $ref: "#/components/schemas/Investor" },
+              {
+                type: "object",
+                properties: {
+                  total_investments: { type: "integer" },
+                  total_investment_amount: { type: "number" },
+                  investments: {
+                    type: "array",
+                    items: { $ref: "#/components/schemas/Investment" },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      InvestorExistsResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: false },
+          message: {
+            type: "string",
+            example: "Investor already exists with same phone or email",
+          },
+        },
+      },
     },
   },
   servers: [

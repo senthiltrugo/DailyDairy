@@ -223,3 +223,33 @@ model MilkDispatch {
   @@index([date], map: "idx_milk_dispatch_date")
   @@map("milk_dispatches")
 }
+
+model Investor {
+  id         String       @id @default(uuid()) @db.Uuid
+  name       String
+  phone      String
+  email      String
+  kycStatus  String       @map("kyc_status")
+  createdAt  DateTime     @default(now()) @map("created_at")
+  investments Investment[]
+
+  @@unique([phone], map: "uniq_investors_phone")
+  @@unique([email], map: "uniq_investors_email")
+  @@index([kycStatus], map: "idx_investors_kyc_status")
+  @@map("investors")
+}
+
+model Investment {
+  id         String    @id @default(uuid()) @db.Uuid
+  investorId String    @db.Uuid @map("investor_id")
+  amount     Decimal   @db.Decimal(14, 2)
+  category   String
+  date       DateTime  @db.Date
+  createdAt  DateTime  @default(now()) @map("created_at")
+  investor   Investor  @relation(fields: [investorId], references: [id], onDelete: Cascade)
+
+  @@index([investorId], map: "idx_investments_investor_id")
+  @@index([category], map: "idx_investments_category")
+  @@index([date], map: "idx_investments_date")
+  @@map("investments")
+}

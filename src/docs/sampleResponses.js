@@ -501,6 +501,79 @@ const sampleResponses = {
       },
     },
   },
+  createInvestor: {
+    request: {
+      name: "Arun Prakash",
+      phone: "9876540001",
+      email: "arun.prakash@example.com",
+      KYC_status: "VERIFIED",
+    },
+    response: {
+      success: true,
+      message: "Investor created successfully",
+      data: {
+        id: "ee860395-15b8-40c9-886e-f3cb48d2f705",
+        name: "Arun Prakash",
+        phone: "9876540001",
+        email: "arun.prakash@example.com",
+        KYC_status: "VERIFIED",
+        created_at: "2026-04-18T14:00:00.000Z",
+      },
+    },
+  },
+  createInvestment: {
+    request: {
+      investor_id: "ee860395-15b8-40c9-886e-f3cb48d2f705",
+      amount: 250000,
+      category: "value-added",
+      date: "2026-04-18",
+    },
+    response: {
+      success: true,
+      message: "Investment recorded successfully",
+      data: {
+        id: "da5dd0de-c6bc-40c6-869b-b9cb26881356",
+        investor_id: "ee860395-15b8-40c9-886e-f3cb48d2f705",
+        amount: 250000,
+        category: "value-added",
+        date: "2026-04-18T00:00:00.000Z",
+        created_at: "2026-04-18T14:10:00.000Z",
+      },
+    },
+  },
+  getInvestorById: {
+    response: {
+      success: true,
+      data: {
+        id: "ee860395-15b8-40c9-886e-f3cb48d2f705",
+        name: "Arun Prakash",
+        phone: "9876540001",
+        email: "arun.prakash@example.com",
+        KYC_status: "VERIFIED",
+        created_at: "2026-04-18T14:00:00.000Z",
+        total_investments: 2,
+        total_investment_amount: 400000,
+        investments: [
+          {
+            id: "da5dd0de-c6bc-40c6-869b-b9cb26881356",
+            investor_id: "ee860395-15b8-40c9-886e-f3cb48d2f705",
+            amount: 250000,
+            category: "value-added",
+            date: "2026-04-18T00:00:00.000Z",
+            created_at: "2026-04-18T14:10:00.000Z",
+          },
+          {
+            id: "8cde1658-f584-4369-9f7a-8531a5f47fc1",
+            investor_id: "ee860395-15b8-40c9-886e-f3cb48d2f705",
+            amount: 150000,
+            category: "milk",
+            date: "2026-04-16T00:00:00.000Z",
+            created_at: "2026-04-16T11:00:00.000Z",
+          },
+        ],
+      },
+    },
+  },
 };
 
 module.exports = sampleResponses;

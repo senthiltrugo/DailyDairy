@@ -80,6 +80,9 @@ src/
 - `POST /orders`
 - `GET /orders?customer_id=&product_id=&date=`
 - `POST /subscriptions`
+- `POST /investors`
+- `POST /investments`
+- `GET /investor/:id`
 
 Swagger docs are available at:
 
@@ -272,3 +275,32 @@ Implemented features:
    - `GET /orders` triggers daily generation run
    - `POST /subscriptions` generates today's subscription order immediately
    - Orders reduce stock from inventory batches (FIFO by expiry)
+
+## Module 6: Investor Management
+
+Implemented features:
+
+1. **Investor**
+   - `id`
+   - `name`
+   - `phone`
+   - `email`
+   - `KYC_status`
+
+2. **Investments**
+   - `investor_id`
+   - `amount`
+   - `category` (`milk` / `hub` / `value-added`)
+   - `date`
+
+3. **APIs**
+   - `POST /investors`
+   - `POST /investments`
+   - `GET /investor/:id`
+
+4. **Output**
+   - Investor database with investment history
+   - Investor profile API includes:
+     - total investment count
+     - total investment amount
+     - full investment records
