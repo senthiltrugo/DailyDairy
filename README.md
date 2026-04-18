@@ -77,6 +77,9 @@ src/
 - `POST /products`
 - `GET /inventory?product_id=`
 - `POST /update-stock`
+- `POST /orders`
+- `GET /orders?customer_id=&product_id=&date=`
+- `POST /subscriptions`
 
 Swagger docs are available at:
 
@@ -236,3 +239,36 @@ Implemented features:
 - Reduce stock batch (e.g., sale):
   - send `movement_type: REDUCE`
   - rejected if reduction exceeds available quantity
+
+## Module 5: Sales
+
+Implemented features:
+
+1. **Customer**
+   - `id`
+   - `type` (`B2B` / `D2C`)
+   - `name`
+   - `phone`
+   - `address`
+
+2. **Orders**
+   - `product_id`
+   - `quantity`
+   - `price`
+   - `total`
+   - also linked to customer and optional subscription
+
+3. **Subscription**
+   - daily delivery subscription
+   - `quantity_per_day`
+
+4. **APIs**
+   - `POST /orders`
+   - `GET /orders`
+   - `POST /subscriptions`
+
+5. **Logic**
+   - Auto-generates daily orders for active subscriptions
+   - `GET /orders` triggers daily generation run
+   - `POST /subscriptions` generates today's subscription order immediately
+   - Orders reduce stock from inventory batches (FIFO by expiry)

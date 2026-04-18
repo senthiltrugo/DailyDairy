@@ -393,6 +393,114 @@ const sampleResponses = {
       ],
     },
   },
+  createOrder: {
+    request: {
+      customer: {
+        type: "D2C",
+        name: "Priya",
+        phone: "9876501234",
+        address: "12 Lake View Street",
+      },
+      product_id: "26c59de8-153a-49be-8d90-205f822fa65e",
+      quantity: 3,
+      price: 62,
+      order_date: "2026-04-18",
+    },
+    response: {
+      success: true,
+      message: "Order created successfully",
+      data: {
+        id: "d3d58f93-f455-4b7d-86a9-4f3f4e53b622",
+        customer_id: "3d4acacd-7363-4be2-82f1-c55c3980e39b",
+        product_id: "26c59de8-153a-49be-8d90-205f822fa65e",
+        subscription_id: null,
+        quantity: 3,
+        price: 62,
+        total: 186,
+        order_date: "2026-04-18T00:00:00.000Z",
+        source: "MANUAL",
+        customer: {
+          id: "3d4acacd-7363-4be2-82f1-c55c3980e39b",
+          type: "D2C",
+          name: "Priya",
+          phone: "9876501234",
+          address: "12 Lake View Street",
+        },
+        product: {
+          id: "26c59de8-153a-49be-8d90-205f822fa65e",
+          name: "milk",
+          unit: "litre",
+        },
+        stock_consumption: [
+          {
+            batch_id: "BATCH-MILK-001",
+            reduced_quantity: 3,
+            remaining_quantity: 45,
+          },
+        ],
+      },
+    },
+  },
+  createSubscription: {
+    request: {
+      customer_id: "3d4acacd-7363-4be2-82f1-c55c3980e39b",
+      product_id: "26c59de8-153a-49be-8d90-205f822fa65e",
+      quantity_per_day: 2,
+      start_date: "2026-04-18",
+      is_active: true,
+    },
+    response: {
+      success: true,
+      message: "Subscription created successfully",
+      data: {
+        id: "85fc4aa0-367d-4a9d-a43a-9ff70fcb90f8",
+        customer_id: "3d4acacd-7363-4be2-82f1-c55c3980e39b",
+        product_id: "26c59de8-153a-49be-8d90-205f822fa65e",
+        quantity_per_day: 2,
+        start_date: "2026-04-18T00:00:00.000Z",
+        is_active: true,
+      },
+      auto_generated_daily_orders: {
+        generated_count: 1,
+        skipped_existing: 0,
+        failed: [],
+      },
+    },
+  },
+  getOrders: {
+    response: {
+      success: true,
+      data: [
+        {
+          id: "d3d58f93-f455-4b7d-86a9-4f3f4e53b622",
+          customer_id: "3d4acacd-7363-4be2-82f1-c55c3980e39b",
+          product_id: "26c59de8-153a-49be-8d90-205f822fa65e",
+          subscription_id: null,
+          quantity: 3,
+          price: 62,
+          total: 186,
+          order_date: "2026-04-18T00:00:00.000Z",
+          source: "MANUAL",
+        },
+        {
+          id: "e47d77d3-1e0a-48f8-a4ab-7d381b653581",
+          customer_id: "3d4acacd-7363-4be2-82f1-c55c3980e39b",
+          product_id: "26c59de8-153a-49be-8d90-205f822fa65e",
+          subscription_id: "85fc4aa0-367d-4a9d-a43a-9ff70fcb90f8",
+          quantity: 2,
+          price: 62,
+          total: 124,
+          order_date: "2026-04-18T00:00:00.000Z",
+          source: "SUBSCRIPTION_AUTO",
+        },
+      ],
+      auto_generated_daily_orders: {
+        generated_count: 1,
+        skipped_existing: 2,
+        failed: [],
+      },
+    },
+  },
 };
 
 module.exports = sampleResponses;
