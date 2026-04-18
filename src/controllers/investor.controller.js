@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { calculatePortfolio } = require("../utils/portfolioEngine");
 
 const ALLOWED_KYC_STATUSES = new Set(["PENDING", "VERIFIED", "REJECTED"]);
 const ALLOWED_INVESTMENT_CATEGORIES = new Set(["milk", "hub", "value-added"]);
@@ -173,8 +174,43 @@ const getInvestorById = async (req, res, next) => {
   }
 };
 
+const getInvestorPortfolio = async (req, res, next) => {
+  try {
+    const { investorId } = req.params;
+
+    const investor = await prisma.investor.findUnique({
+      where: { id: investorId },
+      include: {
+        investments: {
+          orderBy: [{ date: "desc" }, { createdAt: "desc" }],
+        },
+      },
+    });
+
+    if (!investor) {
+      return res.status(404).json({
+        success: false,
+        message: "Investor not found",
+      });
+    }
+
+    const portfolio = calculatePortfolio(investor.investments);
+
+    return res.json({
+      success: true,
+      data: {
+        investor: mapInvestor(investor),
+        ...portfolio,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createInvestor,
   createInvestment,
   getInvestorById,
+  getInvestorPortfolio,
 };

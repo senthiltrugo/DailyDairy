@@ -852,6 +852,77 @@ const swaggerDefinition = {
           },
         },
       },
+      PortfolioAllocationPercentages: {
+        type: "object",
+        properties: {
+          milk: { type: "number", example: 25 },
+          hubs: { type: "number", example: 37.5 },
+          "value-added": { type: "number", example: 37.5 },
+        },
+      },
+      PortfolioCategoryAmounts: {
+        type: "object",
+        properties: {
+          milk: { type: "number", example: 100000 },
+          hubs: { type: "number", example: 150000 },
+          "value-added": { type: "number", example: 150000 },
+        },
+      },
+      PortfolioCategoryReturns: {
+        type: "object",
+        properties: {
+          milk: { type: "number", example: 15000 },
+          hubs: { type: "number", example: 33000 },
+          "value-added": { type: "number", example: 45000 },
+        },
+      },
+      PortfolioRoiRates: {
+        type: "object",
+        properties: {
+          milk: { type: "string", example: "15%" },
+          hubs: { type: "string", example: "22%" },
+          "value-added": { type: "string", example: "30%" },
+        },
+      },
+      PortfolioBreakdownItem: {
+        type: "object",
+        properties: {
+          category: { type: "string", enum: ["milk", "hubs", "value-added"] },
+          invested_amount: { type: "number" },
+          allocation_percentage: { type: "number" },
+          roi_rate_percentage: { type: "number" },
+          expected_return: { type: "number" },
+        },
+      },
+      InvestorPortfolioResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          data: {
+            type: "object",
+            properties: {
+              investor: { $ref: "#/components/schemas/Investor" },
+              total_invested_amount: { type: "number", example: 400000 },
+              allocation_percentages: {
+                $ref: "#/components/schemas/PortfolioAllocationPercentages",
+              },
+              category_amounts: {
+                $ref: "#/components/schemas/PortfolioCategoryAmounts",
+              },
+              roi_rates: { $ref: "#/components/schemas/PortfolioRoiRates" },
+              expected_returns_by_category: {
+                $ref: "#/components/schemas/PortfolioCategoryReturns",
+              },
+              total_expected_returns: { type: "number", example: 93000 },
+              total_roi_percentage: { type: "number", example: 23.25 },
+              breakdown: {
+                type: "array",
+                items: { $ref: "#/components/schemas/PortfolioBreakdownItem" },
+              },
+            },
+          },
+        },
+      },
     },
   },
   servers: [

@@ -304,3 +304,31 @@ Implemented features:
      - total investment count
      - total investment amount
      - full investment records
+
+## Module 7: Portfolio Allocation Engine
+
+Implemented features:
+
+1. **Allocation**
+   - `investor_id`
+   - `% in milk`
+   - `% in hubs`
+   - `% in value-added`
+
+2. **Logic**
+   - Calculates expected returns per category using ROI assumptions:
+     - Milk: `15%`
+     - Hubs: `22%`
+     - Value-added: `30%`
+   - Aggregates total expected returns
+   - Aggregates total ROI percentage
+
+3. **API**
+   - `GET /portfolio/:investor_id`
+
+4. **Output**
+   - allocation percentages by category
+   - invested amount per category
+   - expected returns per category
+   - total expected returns
+   - total ROI%
