@@ -83,6 +83,9 @@ src/
 - `POST /investors`
 - `POST /investments`
 - `GET /investor/:id`
+- `GET /portfolio/:investor_id`
+- `GET /farmer-payouts?date=YYYY-MM-DD`
+- `GET /investor-payouts?date=YYYY-MM-DD`
 
 Swagger docs are available at:
 
@@ -332,3 +335,27 @@ Implemented features:
    - expected returns per category
    - total expected returns
    - total ROI%
+
+## Module 8: Payments & Payout
+
+Implemented features:
+
+1. **Farmer payouts**
+   - based on `milk_procurement_records.total_amount`
+   - monthly aggregation per farmer
+
+2. **Investor payouts**
+   - monthly return calculation from monthly investments
+   - ROI assumptions:
+     - Milk: `15%`
+     - Hubs: `22%`
+     - Value-added: `30%`
+
+3. **APIs**
+   - `GET /farmer-payouts?date=YYYY-MM-DD`
+   - `GET /investor-payouts?date=YYYY-MM-DD`
+
+4. **Output**
+   - payout summaries per farmer/investor
+   - grand totals
+   - clear payout logic metadata in API responses

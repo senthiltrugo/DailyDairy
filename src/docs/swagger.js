@@ -923,6 +923,93 @@ const swaggerDefinition = {
           },
         },
       },
+      FarmerPayoutItem: {
+        type: "object",
+        properties: {
+          farmer_id: { type: "string", format: "uuid" },
+          farmer_name: { type: "string" },
+          phone: { type: "string" },
+          total_quantity_litres: { type: "number" },
+          total_payout_amount: { type: "number" },
+          entries_count: { type: "integer" },
+          entries: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                milk_entry_id: { type: "string", format: "uuid" },
+                date: { type: "string", format: "date-time" },
+                quantity_litres: { type: "number" },
+                total_amount: { type: "number" },
+              },
+            },
+          },
+        },
+      },
+      FarmerPayoutsResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          month: { type: "string", example: "2026-04" },
+          data: {
+            type: "array",
+            items: { $ref: "#/components/schemas/FarmerPayoutItem" },
+          },
+          totals: {
+            type: "object",
+            properties: {
+              farmers_count: { type: "integer" },
+              grand_total_payout_amount: { type: "number" },
+            },
+          },
+          payout_logic: { type: "string" },
+        },
+      },
+      InvestorPayoutItem: {
+        type: "object",
+        properties: {
+          investor_id: { type: "string", format: "uuid" },
+          investor_name: { type: "string" },
+          month: { type: "string", example: "2026-04" },
+          invested_amount: { type: "number" },
+          investments_count: { type: "integer" },
+          monthly_returns_by_category: {
+            type: "object",
+            properties: {
+              milk: { type: "number" },
+              hubs: { type: "number" },
+              "value-added": { type: "number" },
+            },
+          },
+          total_monthly_return: { type: "number" },
+        },
+      },
+      InvestorPayoutsResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          month: { type: "string", example: "2026-04" },
+          data: {
+            type: "array",
+            items: { $ref: "#/components/schemas/InvestorPayoutItem" },
+          },
+          totals: {
+            type: "object",
+            properties: {
+              investors_count: { type: "integer" },
+              grand_total_monthly_return: { type: "number" },
+            },
+          },
+          payout_logic: {
+            type: "object",
+            properties: {
+              milk: { type: "string" },
+              hubs: { type: "string" },
+              "value-added": { type: "string" },
+            },
+          },
+        },
+      },
     },
   },
   servers: [
