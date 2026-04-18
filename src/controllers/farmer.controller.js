@@ -6,6 +6,8 @@ const mapFarmerResponse = (farmer) => ({
   phone: farmer.phone,
   village: farmer.village,
   district: farmer.district,
+  latitude: farmer.latitude !== null ? Number(farmer.latitude) : null,
+  longitude: farmer.longitude !== null ? Number(farmer.longitude) : null,
   bank_account_number: farmer.bankAccountNumber,
   ifsc_code: farmer.ifscCode,
   number_of_cattle: farmer.numberOfCattle,
@@ -20,6 +22,8 @@ const createFarmer = async (req, res, next) => {
       phone,
       village,
       district,
+      latitude,
+      longitude,
       bank_account_number: bankAccountNumber,
       ifsc_code: ifscCode,
       number_of_cattle: numberOfCattle,
@@ -60,12 +64,38 @@ const createFarmer = async (req, res, next) => {
       });
     }
 
+    if (
+      latitude !== undefined &&
+      latitude !== null &&
+      (!Number.isFinite(Number(latitude)) || Number(latitude) < -90 || Number(latitude) > 90)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: ["latitude must be between -90 and 90"],
+      });
+    }
+
+    if (
+      longitude !== undefined &&
+      longitude !== null &&
+      (!Number.isFinite(Number(longitude)) || Number(longitude) < -180 || Number(longitude) > 180)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: ["longitude must be between -180 and 180"],
+      });
+    }
+
     const farmer = await prisma.farmer.create({
       data: {
         name,
         phone,
         village,
         district,
+        ...(latitude !== undefined && latitude !== null && { latitude: Number(latitude) }),
+        ...(longitude !== undefined && longitude !== null && { longitude: Number(longitude) }),
         bankAccountNumber,
         ifscCode,
         numberOfCattle: Number(numberOfCattle),
@@ -106,6 +136,8 @@ const updateFarmer = async (req, res, next) => {
       phone,
       village,
       district,
+      latitude,
+      longitude,
       bank_account_number: bankAccountNumber,
       ifsc_code: ifscCode,
       number_of_cattle: numberOfCattle,
@@ -140,6 +172,30 @@ const updateFarmer = async (req, res, next) => {
       }
     }
 
+    if (latitude !== undefined && latitude !== null) {
+      if (!Number.isFinite(Number(latitude)) || Number(latitude) < -90 || Number(latitude) > 90) {
+        return res.status(400).json({
+          success: false,
+          message: "Validation failed",
+          errors: ["latitude must be between -90 and 90"],
+        });
+      }
+    }
+
+    if (longitude !== undefined && longitude !== null) {
+      if (
+        !Number.isFinite(Number(longitude)) ||
+        Number(longitude) < -180 ||
+        Number(longitude) > 180
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "Validation failed",
+          errors: ["longitude must be between -180 and 180"],
+        });
+      }
+    }
+
     const farmer = await prisma.farmer.update({
       where: { id },
       data: {
@@ -147,6 +203,12 @@ const updateFarmer = async (req, res, next) => {
         ...(phone !== undefined && { phone }),
         ...(village !== undefined && { village }),
         ...(district !== undefined && { district }),
+        ...(latitude !== undefined && {
+          latitude: latitude === null ? null : Number(latitude),
+        }),
+        ...(longitude !== undefined && {
+          longitude: longitude === null ? null : Number(longitude),
+        }),
         ...(bankAccountNumber !== undefined && { bankAccountNumber }),
         ...(ifscCode !== undefined && { ifscCode }),
         ...(numberOfCattle !== undefined && { numberOfCattle: Number(numberOfCattle) }),

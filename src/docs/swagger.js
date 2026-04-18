@@ -18,6 +18,8 @@ const swaggerDefinition = {
           phone: { type: "string", example: "9876543210" },
           village: { type: "string", example: "Kovilpatti" },
           district: { type: "string", example: "Thoothukudi" },
+          latitude: { type: "number", nullable: true, example: 8.805038 },
+          longitude: { type: "number", nullable: true, example: 78.151884 },
           bank_account_number: { type: "string", example: "123456789012" },
           ifsc_code: { type: "string", example: "SBIN0000123" },
           number_of_cattle: { type: "integer", example: 12 },
@@ -42,6 +44,8 @@ const swaggerDefinition = {
           phone: { type: "string" },
           village: { type: "string" },
           district: { type: "string" },
+          latitude: { type: "number", minimum: -90, maximum: 90, nullable: true },
+          longitude: { type: "number", minimum: -180, maximum: 180, nullable: true },
           bank_account_number: { type: "string" },
           ifsc_code: { type: "string" },
           number_of_cattle: { type: "integer", minimum: 0 },
@@ -55,6 +59,8 @@ const swaggerDefinition = {
           phone: { type: "string" },
           village: { type: "string" },
           district: { type: "string" },
+          latitude: { type: "number", minimum: -90, maximum: 90, nullable: true },
+          longitude: { type: "number", minimum: -180, maximum: 180, nullable: true },
           bank_account_number: { type: "string" },
           ifsc_code: { type: "string" },
           number_of_cattle: { type: "integer", minimum: 0 },
@@ -146,6 +152,142 @@ const swaggerDefinition = {
           data: {
             type: "array",
             items: { $ref: "#/components/schemas/MilkEntry" },
+          },
+        },
+      },
+      CollectionCenter: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          name: { type: "string", example: "Center A" },
+          location: { type: "string", example: "Thoothukudi Main Road" },
+          capacity_litres: { type: "number", example: 5000 },
+          manager_name: { type: "string", example: "Suresh Babu" },
+          latitude: { type: "number", nullable: true, example: 8.805038 },
+          longitude: { type: "number", nullable: true, example: 78.151884 },
+          created_at: { type: "string", format: "date-time" },
+        },
+      },
+      CreateCollectionCenterRequest: {
+        type: "object",
+        required: ["name", "location", "capacity_litres", "manager_name"],
+        properties: {
+          name: { type: "string" },
+          location: { type: "string" },
+          capacity_litres: { type: "number", minimum: 0.01 },
+          manager_name: { type: "string" },
+          latitude: { type: "number", minimum: -90, maximum: 90, nullable: true },
+          longitude: { type: "number", minimum: -180, maximum: 180, nullable: true },
+        },
+      },
+      CollectionCenterCreateResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          message: { type: "string", example: "Collection center created successfully" },
+          data: { $ref: "#/components/schemas/CollectionCenter" },
+        },
+      },
+      CollectionCenterListResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          data: {
+            type: "array",
+            items: { $ref: "#/components/schemas/CollectionCenter" },
+          },
+        },
+      },
+      CollectionRecord: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          farmer_id: { type: "string", format: "uuid" },
+          center_id: { type: "string", format: "uuid" },
+          quantity: { type: "number", example: 120.5 },
+          timestamp: { type: "string", format: "date-time" },
+        },
+      },
+      CreateCollectionRecordRequest: {
+        type: "object",
+        required: ["farmer_id", "quantity"],
+        properties: {
+          farmer_id: { type: "string", format: "uuid" },
+          center_id: {
+            type: "string",
+            format: "uuid",
+            nullable: true,
+            description: "Optional. If omitted, assigned nearest center is used.",
+          },
+          quantity: { type: "number", minimum: 0.01 },
+          timestamp: { type: "string", format: "date-time", nullable: true },
+        },
+      },
+      CollectionRecordCreateResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          message: { type: "string", example: "Milk collected successfully" },
+          data: {
+            allOf: [
+              { $ref: "#/components/schemas/CollectionRecord" },
+              {
+                type: "object",
+                properties: {
+                  assigned_center: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", format: "uuid" },
+                      name: { type: "string" },
+                      location: { type: "string" },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+          daily_capacity_status: {
+            type: "object",
+            properties: {
+              center_id: { type: "string", format: "uuid" },
+              date: { type: "string", format: "date" },
+              daily_total_quantity: { type: "number" },
+              capacity_litres: { type: "number" },
+              alert: { type: "string", enum: ["OK", "CAPACITY_EXCEEDED"] },
+            },
+          },
+        },
+      },
+      DailyCollectionSummaryItem: {
+        type: "object",
+        properties: {
+          center_id: { type: "string", format: "uuid" },
+          center_name: { type: "string" },
+          location: { type: "string" },
+          date: { type: "string", format: "date" },
+          daily_total_quantity: { type: "number" },
+          capacity_litres: { type: "number" },
+          alert: { type: "string", enum: ["OK", "CAPACITY_EXCEEDED"] },
+        },
+      },
+      DailyCollectionSummaryResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          data: {
+            type: "array",
+            items: { $ref: "#/components/schemas/DailyCollectionSummaryItem" },
+          },
+          aggregation_query: {
+            type: "object",
+            properties: {
+              type: { type: "string", example: "prisma" },
+              description: {
+                type: "string",
+                example: "Daily total quantity collected per center",
+              },
+              pseudo_sql: { type: "string" },
+            },
           },
         },
       },

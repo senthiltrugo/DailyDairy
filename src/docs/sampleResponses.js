@@ -122,6 +122,82 @@ const sampleResponses = {
       errors: ["fat_percentage is required"],
     },
   },
+  createCollectionCenter: {
+    request: {
+      name: "Center A",
+      location: "Thoothukudi Main Road",
+      capacity_litres: 5000,
+      manager_name: "Suresh Babu",
+      latitude: 8.805038,
+      longitude: 78.151884,
+    },
+    response: {
+      success: true,
+      message: "Collection center created successfully",
+      data: {
+        id: "6f9bcc88-7ae7-48a0-aa22-b6e6f68457d3",
+        name: "Center A",
+        location: "Thoothukudi Main Road",
+        capacity_litres: 5000,
+        manager_name: "Suresh Babu",
+        latitude: 8.805038,
+        longitude: 78.151884,
+        created_at: "2026-04-18T12:00:00.000Z",
+      },
+    },
+  },
+  collectMilk: {
+    request: {
+      farmer_id: "2de1c147-2de8-479c-8f0e-4b0afcbccf8d",
+      quantity: 250,
+      timestamp: "2026-04-18T06:00:00.000Z",
+    },
+    response: {
+      success: true,
+      message: "Milk collected successfully",
+      data: {
+        id: "f861b35e-a228-43fd-a297-5689e8c2cc69",
+        farmer_id: "2de1c147-2de8-479c-8f0e-4b0afcbccf8d",
+        center_id: "6f9bcc88-7ae7-48a0-aa22-b6e6f68457d3",
+        quantity: 250,
+        timestamp: "2026-04-18T06:00:00.000Z",
+        assigned_center: {
+          id: "6f9bcc88-7ae7-48a0-aa22-b6e6f68457d3",
+          name: "Center A",
+          location: "Thoothukudi Main Road",
+        },
+      },
+      daily_capacity_status: {
+        center_id: "6f9bcc88-7ae7-48a0-aa22-b6e6f68457d3",
+        date: "2026-04-18",
+        daily_total_quantity: 5100,
+        capacity_litres: 5000,
+        alert: "CAPACITY_EXCEEDED",
+      },
+    },
+  },
+  dailyCollectionSummary: {
+    response: {
+      success: true,
+      data: [
+        {
+          center_id: "6f9bcc88-7ae7-48a0-aa22-b6e6f68457d3",
+          center_name: "Center A",
+          location: "Thoothukudi Main Road",
+          date: "2026-04-18",
+          daily_total_quantity: 5100,
+          capacity_litres: 5000,
+          alert: "CAPACITY_EXCEEDED",
+        },
+      ],
+      aggregation_query: {
+        type: "prisma",
+        description: "Daily total quantity collected per center",
+        pseudo_sql:
+          "SELECT center_id, DATE(timestamp) AS date, SUM(quantity) AS daily_total FROM collection_records WHERE timestamp >= :start AND timestamp < :end GROUP BY center_id, DATE(timestamp)",
+      },
+    },
+  },
 };
 
 module.exports = sampleResponses;

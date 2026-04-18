@@ -67,6 +67,10 @@ src/
 - `PUT /farmers/:id`
 - `POST /milk-entry`
 - `GET /milk-entries?farmer_id=&date=`
+- `POST /collection-centers`
+- `GET /collection-centers`
+- `POST /collect-milk`
+- `GET /daily-collection-summary?date=YYYY-MM-DD`
 
 Swagger docs are available at:
 
@@ -97,3 +101,46 @@ Sample request/response payloads are provided in:
 - `src/docs/sampleResponses.js`
 
 These include success and validation error examples for all required endpoints.
+
+## Module 2: Milk Collection & Logistics
+
+Implemented features:
+
+1. **Collection Center**
+   - `id`
+   - `name`
+   - `location`
+   - `capacity_litres`
+   - `manager_name`
+   - optional geolocation (`latitude`, `longitude`) for nearest-center assignment
+
+2. **Collection Records**
+   - `farmer_id`
+   - `center_id`
+   - `quantity`
+   - `timestamp`
+
+3. **Logic**
+   - Tracks daily total quantity per center
+   - Returns alert status when daily total exceeds center capacity
+   - Assigns farmer to nearest center (if `center_id` is not explicitly provided)
+
+4. **APIs**
+   - `POST /collection-centers`
+   - `GET /collection-centers`
+   - `POST /collect-milk`
+   - `GET /daily-collection-summary`
+
+5. **Aggregation Query**
+
+Daily collection summary uses Prisma aggregation equivalent to:
+
+```sql
+SELECT
+  center_id,
+  DATE(timestamp) AS date,
+  SUM(quantity) AS daily_total
+FROM collection_records
+WHERE timestamp >= :start AND timestamp < :end
+GROUP BY center_id, DATE(timestamp);
+```
