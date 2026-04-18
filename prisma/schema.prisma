@@ -101,6 +101,53 @@ model Manufacturer {
   @@map("manufacturers")
 }
 
+model Product {
+  id               String      @id @default(uuid()) @db.Uuid
+  name             String
+  unit             String
+  sellingPrice     Decimal     @db.Decimal(12, 2) @map("selling_price")
+  createdAt        DateTime    @default(now()) @map("created_at")
+  inventoryBatches Inventory[]
+
+  @@unique([name], map: "uniq_products_name")
+  @@map("products")
+}
+
+model Inventory {
+  id                String         @id @default(uuid()) @db.Uuid
+  productId         String         @db.Uuid @map("product_id")
+  quantityAvailable Decimal        @db.Decimal(12, 3) @map("quantity_available")
+  batchId           String         @map("batch_id")
+  expiryDate        DateTime?      @db.Date @map("expiry_date")
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+  product           Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  stockMovements    StockMovement[]
+
+  @@index([productId], map: "idx_inventory_product_id")
+  @@index([batchId], map: "idx_inventory_batch_id")
+  @@unique([productId, batchId], map: "uniq_inventory_product_batch")
+  @@map("inventory")
+}
+
+model StockMovement {
+  id           String     @id @default(uuid()) @db.Uuid
+  productId    String     @db.Uuid @map("product_id")
+  inventoryId  String?    @db.Uuid @map("inventory_id")
+  batchId      String?    @map("batch_id")
+  movementType String     @map("movement_type")
+  quantity     Decimal    @db.Decimal(12, 3)
+  source       String?
+  note         String?
+  createdAt    DateTime   @default(now()) @map("created_at")
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  inventory    Inventory? @relation(fields: [inventoryId], references: [id], onDelete: SetNull)
+
+  @@index([productId], map: "idx_stock_movements_product_id")
+  @@index([movementType], map: "idx_stock_movements_movement_type")
+  @@map("stock_movements")
+}
+
 model MilkDispatch {
   id                 String           @id @default(uuid()) @db.Uuid
   centerId           String           @db.Uuid @map("center_id")

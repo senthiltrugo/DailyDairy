@@ -74,6 +74,9 @@ src/
 - `POST /manufacturers`
 - `POST /dispatch-milk`
 - `GET /processing-report?date=YYYY-MM-DD&manufacturer_id=`
+- `POST /products`
+- `GET /inventory?product_id=`
+- `POST /update-stock`
 
 Swagger docs are available at:
 
@@ -197,3 +200,39 @@ FROM milk_dispatches
 WHERE date >= :start AND date < :end
 GROUP BY manufacturer_id, DATE(date);
 ```
+
+## Module 4: Product & Inventory
+
+Implemented features:
+
+1. **Product**
+   - `id`
+   - `name` (`milk`, `curd`, `paneer`, `ghee`)
+   - `unit` (`litre` / `kg`)
+   - `selling_price`
+
+2. **Inventory**
+   - `product_id`
+   - `quantity_available`
+   - `batch_id`
+   - `expiry_date`
+
+3. **Logic**
+   - **Reduce stock on sale** via `movement_type: REDUCE`
+   - **Increase stock after processing** via `movement_type: INCREASE`
+   - Stock movement ledger recorded in `stock_movements`
+   - Validation blocks negative stock balances
+
+4. **APIs**
+   - `POST /products`
+   - `GET /inventory`
+   - `POST /update-stock`
+
+### Inventory engine behavior
+
+- Create/increase stock batch:
+  - send `movement_type: INCREASE`
+  - `expiry_date` is required when creating a new batch
+- Reduce stock batch (e.g., sale):
+  - send `movement_type: REDUCE`
+  - rejected if reduction exceeds available quantity

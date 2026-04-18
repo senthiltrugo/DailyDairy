@@ -291,6 +291,108 @@ const sampleResponses = {
       },
     },
   },
+  createProduct: {
+    request: {
+      name: "paneer",
+      unit: "kg",
+      selling_price: 340,
+    },
+    response: {
+      success: true,
+      message: "Product created successfully",
+      data: {
+        id: "9f4f680f-c72f-4f38-a5be-905281f7b2aa",
+        name: "paneer",
+        unit: "kg",
+        selling_price: 340,
+        created_at: "2026-04-18T13:00:00.000Z",
+      },
+    },
+  },
+  updateStockIncrease: {
+    request: {
+      product_id: "9f4f680f-c72f-4f38-a5be-905281f7b2aa",
+      batch_id: "BATCH-PANEER-001",
+      expiry_date: "2026-04-30",
+      quantity: 20,
+      movement_type: "INCREASE",
+      source: "processing",
+      note: "from dispatch output",
+    },
+    response: {
+      success: true,
+      message: "Stock updated successfully",
+      data: {
+        product_id: "9f4f680f-c72f-4f38-a5be-905281f7b2aa",
+        product_name: "paneer",
+        unit: "kg",
+        quantity_available: 120.5,
+        batch_id: "BATCH-PANEER-001",
+        expiry_date: "2026-04-30T00:00:00.000Z",
+        movement: {
+          id: "14ebeb8f-529f-4452-9120-72f2cb6fc9cb",
+          movement_type: "INCREASE",
+          quantity: 20,
+          source: "processing",
+          note: "from dispatch output",
+          created_at: "2026-04-18T13:05:00.000Z",
+        },
+        stock_balance: {
+          previous_quantity: 100.5,
+          updated_quantity: 120.5,
+        },
+      },
+    },
+  },
+  updateStockReduce: {
+    request: {
+      product_id: "9f4f680f-c72f-4f38-a5be-905281f7b2aa",
+      batch_id: "BATCH-PANEER-001",
+      quantity: 5.5,
+      movement_type: "REDUCE",
+      source: "sale",
+      note: "retail billing #INV-1043",
+    },
+    response: {
+      success: true,
+      message: "Stock updated successfully",
+      data: {
+        product_id: "9f4f680f-c72f-4f38-a5be-905281f7b2aa",
+        product_name: "paneer",
+        unit: "kg",
+        quantity_available: 115,
+        batch_id: "BATCH-PANEER-001",
+        expiry_date: "2026-04-30T00:00:00.000Z",
+        movement: {
+          id: "4f3f1d13-0f5e-44a2-b0c0-8206e9fcb5c4",
+          movement_type: "REDUCE",
+          quantity: 5.5,
+          source: "sale",
+          note: "retail billing #INV-1043",
+          created_at: "2026-04-18T13:15:00.000Z",
+        },
+        stock_balance: {
+          previous_quantity: 120.5,
+          updated_quantity: 115,
+        },
+      },
+    },
+  },
+  getInventory: {
+    response: {
+      success: true,
+      data: [
+        {
+          product_id: "9f4f680f-c72f-4f38-a5be-905281f7b2aa",
+          product_name: "paneer",
+          unit: "kg",
+          quantity_available: 115,
+          batch_id: "BATCH-PANEER-001",
+          expiry_date: "2026-04-30T00:00:00.000Z",
+        },
+      ],
+    },
+  },
 };
 
 module.exports = sampleResponses;

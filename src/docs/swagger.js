@@ -453,6 +453,125 @@ const swaggerDefinition = {
           },
         },
       },
+      Product: {
+        type: "object",
+        properties: {
+          id: { type: "string", format: "uuid" },
+          name: { type: "string", enum: ["milk", "curd", "paneer", "ghee"] },
+          unit: { type: "string", enum: ["litre", "kg"] },
+          selling_price: { type: "number", example: 62.5 },
+          created_at: { type: "string", format: "date-time" },
+        },
+      },
+      CreateProductRequest: {
+        type: "object",
+        required: ["name", "unit", "selling_price"],
+        properties: {
+          name: { type: "string", enum: ["milk", "curd", "paneer", "ghee"] },
+          unit: { type: "string", enum: ["litre", "kg"] },
+          selling_price: { type: "number", minimum: 0.01 },
+        },
+      },
+      ProductCreateResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          message: { type: "string", example: "Product created successfully" },
+          data: { $ref: "#/components/schemas/Product" },
+        },
+      },
+      InventoryItem: {
+        type: "object",
+        properties: {
+          product_id: { type: "string", format: "uuid" },
+          product_name: { type: "string", enum: ["milk", "curd", "paneer", "ghee"] },
+          unit: { type: "string", enum: ["litre", "kg"] },
+          quantity_available: { type: "number", example: 450.75 },
+          batch_id: { type: "string", example: "BATCH-PANEER-001" },
+          expiry_date: { type: "string", format: "date", nullable: true },
+        },
+      },
+      InventoryListResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          data: {
+            type: "array",
+            items: { $ref: "#/components/schemas/InventoryItem" },
+          },
+        },
+      },
+      UpdateStockRequest: {
+        type: "object",
+        required: ["product_id", "batch_id", "quantity", "movement_type"],
+        properties: {
+          product_id: { type: "string", format: "uuid" },
+          batch_id: { type: "string" },
+          expiry_date: {
+            type: "string",
+            format: "date",
+            nullable: true,
+            description: "Required for first INCREASE on a new batch.",
+          },
+          quantity: { type: "number", minimum: 0.001 },
+          movement_type: { type: "string", enum: ["INCREASE", "REDUCE"] },
+          source: {
+            type: "string",
+            nullable: true,
+            description: "e.g. processing, procurement, sale",
+          },
+          note: { type: "string", nullable: true },
+        },
+      },
+      UpdateStockResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: true },
+          message: { type: "string", example: "Stock updated successfully" },
+          data: {
+            allOf: [
+              { $ref: "#/components/schemas/InventoryItem" },
+              {
+                type: "object",
+                properties: {
+                  movement: {
+                    type: "object",
+                    properties: {
+                      id: { type: "string", format: "uuid" },
+                      movement_type: { type: "string", enum: ["INCREASE", "REDUCE"] },
+                      quantity: { type: "number" },
+                      source: { type: "string", nullable: true },
+                      note: { type: "string", nullable: true },
+                      created_at: { type: "string", format: "date-time" },
+                    },
+                  },
+                  stock_balance: {
+                    type: "object",
+                    properties: {
+                      previous_quantity: { type: "number" },
+                      updated_quantity: { type: "number" },
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        },
+      },
+      ProductExistsResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: false },
+          message: { type: "string", example: "Product already exists" },
+        },
+      },
+      SimpleErrorResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean", example: false },
+          message: { type: "string" },
+        },
+      },
     },
   },
   servers: [
